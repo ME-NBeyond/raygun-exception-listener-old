@@ -17,7 +17,7 @@ class Config
         $this->apiKey = $apiKey;
         $this->userTracking = false;
         $this->proxy = "";
-        $this->proxy = false;
+        $this->useAsync = false;
     }
 
     /**
