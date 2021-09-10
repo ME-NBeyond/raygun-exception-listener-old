@@ -20,8 +20,9 @@ php composer.phar require tripledotzero/raygun-exception-listener
 ##Usage
 You can automatically send both PHP errors and object-oriented exceptions to Raygun. The RaygunClient requires an HTTP transport (e.g. Guzzle or other PSR-7 compatible interface).
 
-Currently, there are 2 Guzzle-based transport classes. asynchronous and synchronous. As of Version 0.0.*, This package only uses the synchronous transport class
-Below you can find an example code on how to utilize this package
+Currently, there are 2 Guzzle-based transport classes. asynchronous and synchronous. You can choose to use either the GuzzleSync or GuzzleAsync by setting `setUseAsync` to `true`.
+
+###example code
 ```php
 <?php
 

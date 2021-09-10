@@ -69,17 +69,17 @@ class Config
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getUseAsync()
+    public function getUseAsync(): bool
     {
         return $this->useAsync;
     }
 
     /**
-     * @param mixed $useAsync
+     * @param bool $useAsync
      */
-    public function setUseAsync($useAsync): void
+    public function setUseAsync(bool $useAsync): void
     {
         $this->useAsync = $useAsync;
     }
