@@ -1,1 +1,1 @@
-This Package let's you use raygun and have a centralized filterparams, very usefull if you want to have Raygun on multiple projects and filter the same data
+This package lets you add filters to the Raygun package (which this package is dependent on). By using this package you filter the data that is being send to Raygun in order to comply to the GDPR Law. You can also add/overwrite the filters to better suit your application.
