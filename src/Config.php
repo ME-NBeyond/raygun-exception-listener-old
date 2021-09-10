@@ -10,12 +10,14 @@ class Config
     private $apiKey;
     private $proxy;
     private $userTracking;
+    private $useAsync;
 
     public function __construct(string $baseUrl, string $apiKey){
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->userTracking = false;
         $this->proxy = "";
+        $this->proxy = false;
     }
 
     /**
@@ -64,5 +66,21 @@ class Config
     public function setUserTracking(bool $userTracking): void
     {
         $this->userTracking = $userTracking;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUseAsync()
+    {
+        return $this->useAsync;
+    }
+
+    /**
+     * @param mixed $useAsync
+     */
+    public function setUseAsync($useAsync): void
+    {
+        $this->useAsync = $useAsync;
     }
 }

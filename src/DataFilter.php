@@ -4,6 +4,7 @@ namespace RaygunFilterParams;
 
 use GuzzleHttp\Client as HttpClient;
 use Raygun4php\RaygunClient;
+use Raygun4php\Transports\GuzzleAsync;
 use Raygun4php\Transports\GuzzleSync;
 use Throwable;
 
@@ -39,10 +40,12 @@ class DataFilter
 
         '/identity/i',
         '/credential/i',
-        '/creds/i'
+        '/creds/i',
+        '/licence/i'
     ];
 
-    public function __construct(Config $config){
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
 
@@ -102,13 +105,16 @@ class DataFilter
             ]);
         }
 
-        $transport = new GuzzleSync($httpClient);
+        if ($config->getUseAsync()) {
+            $transport = new GuzzleAsync($httpClient);
+        } else {
+            $transport = new GuzzleSync($httpClient);
+        }
         $raygunClient = new RaygunClient($transport);
 
-        if ($config->getUserTracking()){
+        if ($config->getUserTracking()) {
             $raygunClient->setDisableUserTracking(true);
         }
-
         return $raygunClient;
     }
 }
