@@ -8,7 +8,13 @@ use Raygun4php\Transports\GuzzleSync;
 
 class DataFilter
 {
-
+    /**
+     * @var Config
+     */
+    private $config;
+    /**
+     * @var array
+     */
     private $filters = [
         '/secret/i',
         '/api_key/i',
@@ -35,17 +41,13 @@ class DataFilter
         '/creds/i'
     ];
 
-    public function sendToRaygun(\Throwable $throwable, array $config, $tags = null)
+    public function __construct(Config $config){
+        $this->config = $config;
+    }
+
+    public function sendToRaygun(\Throwable $throwable, $tags = null)
     {
-        $httpClient = $this->getHttpClient($config);
-
-        $transport = new GuzzleSync($httpClient);
-        $raygunClient = new RaygunClient($transport);
-
-        if (isset($config['disableUserTracking']) && $config['disableUserTracking'] == true){
-            $raygunClient->setDisableUserTracking(true);
-        }
-
+        $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
         $raygunClient->SendException($throwable, $tags);
     }
@@ -81,10 +83,10 @@ class DataFilter
     }
 
     /**
-     * @param array $config
-     * @return HttpClient
+     * @param Config $config
+     * @return RaygunClient
      */
-    private function getHttpClient(array $config): HttpClient
+    private function getRaygunClient(Config $config): RaygunClient
     {
         if (isset($config['proxy'])) {
             $httpClient = new HttpClient([
@@ -98,6 +100,14 @@ class DataFilter
                 'headers' => ['X-ApiKey' => $config['api_key']]
             ]);
         }
-        return $httpClient;
+
+        $transport = new GuzzleSync($httpClient);
+        $raygunClient = new RaygunClient($transport);
+
+        if ($config->getUserTracking()){
+            $raygunClient->setDisableUserTracking(true);
+        }
+
+        return $raygunClient;
     }
 }
