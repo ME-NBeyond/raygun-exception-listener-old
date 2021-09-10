@@ -15,6 +15,7 @@ class Config
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->userTracking = false;
+        $this->proxy = "";
     }
 
     /**

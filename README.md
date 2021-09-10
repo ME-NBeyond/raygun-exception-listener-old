@@ -27,6 +27,7 @@ Below you can find an example code on how to utilize this package
 
 namespace App\EventListener;
 
+use RaygunFilterParams\Config;
 use RaygunFilterParams\DataFilter;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
@@ -34,18 +35,22 @@ class ExceptionListener
 {
     public function onKernelException(ExceptionEvent $event)
     {
-        $config = [
-            'base_uri' => $_ENV['RAYGUN_BASE_URI'],
-            'api_key' => $_ENV['RAYGUN_API_KEY'],
-            'disableUserTracking' => true,
-            'proxy' => 'http://someproxy:8080',
-        ];
-        $dataFilter = new DataFilter();
-        $dataFilter->sendToRaygun($event->getThrowable(), $config);
+        $config = new Config($_ENV['RAYGUN_BASE_URI'], $_ENV['RAYGUN_API_KEY']);
+        $config->setUserTracking(true);
+        $dataFilter = new DataFilter($config);
+        $dataFilter->sendToRaygun($event->getThrowable());
     }
 }
-```
-as you can see in order to send the data to Raygun, it does require a config array. this array should contain both the BASE_URI and API_KEY.
-The `DisableUserTracking` is turn on by default, in order to turn it off set the `DisableUserTracking` to `true` 
 
-If a Proxy has been given the package will set the proxy
+```
+as you can see in order to send the data to Raygun, you would first need to create the config object with the BASE_URI and API_KEY.
+The `DisableUserTracking` is turn off by default, in order to turn it on use
+```php 
+$config->setUserTracking(true);
+```
+it is the same for the proxy
+```php 
+$config->setProxy('proxy:8080');
+```
+
+For more information see the Raygun4PHP [documentation](https://github.com/MindscapeHQ/raygun4php) or the [Raygun website](https://raygun.com/documentation/)

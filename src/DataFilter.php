@@ -5,6 +5,7 @@ namespace RaygunFilterParams;
 use GuzzleHttp\Client as HttpClient;
 use Raygun4php\RaygunClient;
 use Raygun4php\Transports\GuzzleSync;
+use Throwable;
 
 class DataFilter
 {
@@ -45,7 +46,7 @@ class DataFilter
         $this->config = $config;
     }
 
-    public function sendToRaygun(\Throwable $throwable, $tags = null)
+    public function sendToRaygun(Throwable $throwable, $tags = null)
     {
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
@@ -88,16 +89,16 @@ class DataFilter
      */
     private function getRaygunClient(Config $config): RaygunClient
     {
-        if (isset($config['proxy'])) {
+        if ($config->getProxy() !== "") {
             $httpClient = new HttpClient([
-                'base_uri' => $config['base_uri'],
-                'proxy' => $config['proxy'],
-                'headers' => ['X-ApiKey' => $config['api_key']]
+                'base_uri' => $config->getBaseUrl(),
+                'proxy' =>  $config->getProxy(),
+                'headers' => ['X-ApiKey' =>  $config->getApiKey()]
             ]);
         } else {
             $httpClient = new HttpClient([
-                'base_uri' => $config['base_uri'],
-                'headers' => ['X-ApiKey' => $config['api_key']]
+                'base_uri' => $config->getBaseUrl(),
+                'headers' => ['X-ApiKey' => $config->getApiKey()]
             ]);
         }
 
