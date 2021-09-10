@@ -1,0 +1,6 @@
+#phpstorm
+.idea
+#phpstorm
+
+#vendor
+./vendor/*
