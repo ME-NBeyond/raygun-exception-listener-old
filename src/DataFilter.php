@@ -43,16 +43,18 @@ class DataFilter
         ]);
         $transport = new GuzzleSync($httpClient);
         $raygunClient = new RaygunClient($transport);
-        $raygunClient->setDisableUserTracking(true);
+
+        if ($config['DisableUserTracking']){
+            $raygunClient->setDisableUserTracking(true);
+        }
+
         $this->setFilterParams($raygunClient);
         $raygunClient->SendException($throwable, $tags);
     }
 
-    public function addToFilter(array $array) : void
+    public function addToFilter(string $string) : void
     {
-        foreach ($array as $value){
-            $this->filters[] = $value;
-        }
+        $this->filters[] = '/' . $string . '/i';
     }
 
     /**
