@@ -1,7 +1,14 @@
 {
-    "name": "tripledotzero/raygun-exception-listener",
+    "name": "tripledotzero/raygun-data-filter",
     "description": "description",
-    "keywords": ["raygun"],
+    "keywords": [
+        "raygun",
+        "data filter",
+        "raygun data filter",
+        "raygun data filter",
+        "raygun filter",
+        "gdpr"
+    ],
     "license": "MIT",
     "type": "library",
     "authors": [{
