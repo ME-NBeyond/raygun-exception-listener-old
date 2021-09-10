@@ -42,7 +42,7 @@ class DataFilter
         $transport = new GuzzleSync($httpClient);
         $raygunClient = new RaygunClient($transport);
 
-        if ($config['disableUserTracking']){
+        if (isset($config['disableUserTracking']) && $config['disableUserTracking'] == true){
             $raygunClient->setDisableUserTracking(true);
         }
 
