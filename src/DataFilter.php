@@ -24,7 +24,7 @@ class DataFilter
         '/passwd/i',
         '/pwd/i',
         '/email/i',
-        '/user/i',
+        '/(?!user(-|_)agent)(?!sec(-|_)fetch(-|_)user)user/i',
         '/name/i',
         '/address/i',
         '/street/i',
