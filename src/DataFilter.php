@@ -37,14 +37,12 @@ class DataFilter
 
     public function sendToRaygun(\Throwable $throwable, array $config, $tags = null)
     {
-        $httpClient = new HttpClient([
-            'base_uri' => $config['base_uri'],
-            'headers' => ['X-ApiKey' => $config['api_key']]
-        ]);
+        $httpClient = $this->getHttpClient($config);
+
         $transport = new GuzzleSync($httpClient);
         $raygunClient = new RaygunClient($transport);
 
-        if ($config['DisableUserTracking']){
+        if ($config['disableUserTracking']){
             $raygunClient->setDisableUserTracking(true);
         }
 
@@ -80,5 +78,26 @@ class DataFilter
             $filtered[$filter] = true;
         }
         $client->setFilterParams($filtered);
+    }
+
+    /**
+     * @param array $config
+     * @return HttpClient
+     */
+    private function getHttpClient(array $config): HttpClient
+    {
+        if (isset($config['proxy'])) {
+            $httpClient = new HttpClient([
+                'base_uri' => $config['base_uri'],
+                'proxy' => $config['proxy'],
+                'headers' => ['X-ApiKey' => $config['api_key']]
+            ]);
+        } else {
+            $httpClient = new HttpClient([
+                'base_uri' => $config['base_uri'],
+                'headers' => ['X-ApiKey' => $config['api_key']]
+            ]);
+        }
+        return $httpClient;
     }
 }
