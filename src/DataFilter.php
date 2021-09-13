@@ -49,11 +49,31 @@ class DataFilter
         $this->config = $config;
     }
 
-    public function sendToRaygun(Throwable $throwable, $tags = null)
+    public function sendExceptionToRaygun(
+        Throwable $throwable,
+        array $tags = null,
+        array $userCustomData = null,
+        int $timestamp = null
+    ): void
     {
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
-        $raygunClient->SendException($throwable, $tags);
+        $raygunClient->SendException($throwable, $tags, $userCustomData, $timestamp);
+    }
+
+    public function sendErrorToRaygun(
+        int $errCode,
+        string $errMessage,
+        string $errFile,
+        int $errLine,
+        $tags = null,
+        $userCustomData = null,
+        $timestamp = null
+    ): void
+    {
+        $raygunClient = $this->getRaygunClient($this->config);
+        $this->setFilterParams($raygunClient);
+        $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $userCustomData, $timestamp);
     }
 
     public function addToFilter(string $string) : void
