@@ -16,7 +16,7 @@
         "email": "mojomocro@gmail.com"
     }],
     "require": {
-        "php": ">=7.3",
+        "php": "^7.3|^8.0",
         "mindscape/raygun4php": "^2.0"
     },
     "autoload": {
