@@ -44,23 +44,41 @@ class DataFilter
         '/licence/i'
     ];
 
+    /**
+     * DataFilter constructor.
+     * @param Config $config
+     */
     public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * @param Throwable $throwable
+     * @param array|null $tags
+     * @param array|null $userCustomData
+     * @param int|null $timestamp
+     */
     public function sendExceptionToRaygun(
         Throwable $throwable,
         array $tags = null,
         array $userCustomData = null,
         int $timestamp = null
-    ): void
-    {
+    ): void {
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
         $raygunClient->SendException($throwable, $tags, $userCustomData, $timestamp);
     }
 
+    /**
+     * @param int $errCode
+     * @param string $errMessage
+     * @param string $errFile
+     * @param int $errLine
+     * @param null $tags
+     * @param null $userCustomData
+     * @param null $timestamp
+     */
     public function sendErrorToRaygun(
         int $errCode,
         string $errMessage,
@@ -69,14 +87,16 @@ class DataFilter
         $tags = null,
         $userCustomData = null,
         $timestamp = null
-    ): void
-    {
+    ): void {
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
         $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $userCustomData, $timestamp);
     }
 
-    public function addToFilter(string $string) : void
+    /**
+     * @param string $string
+     */
+    public function addToFilter(string $string): void
     {
         $this->filters[] = '/' . $string . '/i';
     }
@@ -97,6 +117,9 @@ class DataFilter
         return $this->filters;
     }
 
+    /**
+     * @param RaygunClient $client
+     */
     private function setFilterParams(RaygunClient $client)
     {
         $filtered = [];
@@ -112,29 +135,49 @@ class DataFilter
      */
     private function getRaygunClient(Config $config): RaygunClient
     {
-        if ($config->getProxy() !== "") {
-            $httpClient = new HttpClient([
-                'base_uri' => $config->getBaseUrl(),
-                'proxy' =>  $config->getProxy(),
-                'headers' => ['X-ApiKey' =>  $config->getApiKey()]
-            ]);
-        } else {
-            $httpClient = new HttpClient([
-                'base_uri' => $config->getBaseUrl(),
-                'headers' => ['X-ApiKey' => $config->getApiKey()]
-            ]);
-        }
-
-        if ($config->getUseAsync()) {
-            $transport = new GuzzleAsync($httpClient);
-        } else {
-            $transport = new GuzzleSync($httpClient);
-        }
-        $raygunClient = new RaygunClient($transport);
+        $httpClient = $this->getHttpClient($config);
+        $raygunClient = new RaygunClient($this->getGuzzleTransport($config, $httpClient));
 
         if ($config->getUserTracking()) {
             $raygunClient->setDisableUserTracking(true);
         }
+
+        if ($config->getUser()) {
+            $raygunClient->setUserIdentifier($config->getUser());
+        }
+
         return $raygunClient;
+    }
+
+    /**
+     * @param Config $config
+     * @return HttpClient
+     */
+    private function getHttpClient(Config $config): HttpClient
+    {
+        $httpConfig = [
+            'base_uri' => $config->getBaseUrl(),
+            'headers' => ['X-ApiKey' => $config->getApiKey()]
+        ];
+
+        if ($config->getProxy()) {
+            $httpConfig['proxy'] = $config->getProxy();
+        }
+
+        return new HttpClient($httpConfig);
+    }
+
+    /**
+     * @param Config $config
+     * @param HttpClient $httpClient
+     * @return GuzzleAsync|GuzzleSync
+     */
+    private function getGuzzleTransport(Config $config, HttpClient $httpClient)
+    {
+        if ($config->getUseAsync()) {
+            return new GuzzleAsync($httpClient);
+        } else {
+            return new GuzzleSync($httpClient);
+        }
     }
 }

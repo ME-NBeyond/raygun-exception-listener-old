@@ -1,8 +1,8 @@
 <?php
 
-
 namespace RaygunFilterParams;
 
+use Raygun4php\RaygunIdentifier;
 
 class Config
 {
@@ -11,12 +11,13 @@ class Config
     private $proxy;
     private $userTracking;
     private $useAsync;
+    private $user;
 
-    public function __construct(string $baseUrl, string $apiKey){
+    public function __construct(string $baseUrl, string $apiKey)
+    {
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->userTracking = false;
-        $this->proxy = "";
         $this->useAsync = false;
     }
 
@@ -82,5 +83,21 @@ class Config
     public function setUseAsync(bool $useAsync): void
     {
         $this->useAsync = $useAsync;
+    }
+
+    /**
+     * @param RaygunIdentifier $user
+     */
+    public function setUser(RaygunIdentifier $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return RaygunIdentifier
+     */
+    public function getUser(): RaygunIdentifier
+    {
+        return $this->user;
     }
 }
