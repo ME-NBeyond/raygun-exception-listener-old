@@ -19,8 +19,7 @@ class DataFilter
      */
     private $filters = [
         '/secret/i',
-        '/api_key/i',
-        '/apikey/i',
+        '/key/i',
         '/token/i',
         '/auth/i',
         '/card/i',
