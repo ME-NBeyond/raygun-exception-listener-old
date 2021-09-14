@@ -4,3 +4,4 @@
 
 #vendor
 ./vendor/*
+./composer.lock
