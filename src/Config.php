@@ -95,9 +95,9 @@ class Config
     }
 
     /**
-     * @return RaygunIdentifier
+     * @return mixed
      */
-    public function getUser(): RaygunIdentifier
+    public function getUser()
     {
         return $this->user;
     }
