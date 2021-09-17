@@ -38,6 +38,7 @@ class DataFilter
         '/city/i',
 
         '/identity/i',
+        '/id/i',
         '/credential/i',
         '/creds/i',
         '/licence/i'
