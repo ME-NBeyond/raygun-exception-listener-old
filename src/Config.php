@@ -21,7 +21,7 @@ class Config
      */
     public function __construct(?string $baseUrl, ?string $apiKey)
     {
-        $this->track = (!empty($baseUrl) && empty(!$apiKey)) ? false : true;
+        $this->track = !empty($baseUrl) && !empty($apiKey);
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->proxy = "";
