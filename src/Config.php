@@ -12,9 +12,16 @@ class Config
     private $userTracking;
     private $useAsync;
     private $user;
+    private $track;
 
-    public function __construct(string $baseUrl, string $apiKey)
+    /**
+     * Config constructor.
+     * @param string|null $baseUrl
+     * @param string|null $apiKey
+     */
+    public function __construct(?string $baseUrl, ?string $apiKey)
     {
+        $this->track = (!empty($baseUrl) && empty(!$apiKey)) ? false : true;
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
         $this->proxy = "";
@@ -100,5 +107,21 @@ class Config
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTrack(): bool
+    {
+        return $this->track;
+    }
+
+    /**
+     * @param bool $track
+     */
+    public function setTrack(bool $track): void
+    {
+        $this->track = $track;
     }
 }

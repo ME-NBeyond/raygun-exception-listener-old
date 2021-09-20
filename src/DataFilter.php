@@ -65,9 +65,11 @@ class DataFilter
         array $userCustomData = null,
         int $timestamp = null
     ): void {
-        $raygunClient = $this->getRaygunClient($this->config);
-        $this->setFilterParams($raygunClient);
-        $raygunClient->SendException($throwable, $tags, $userCustomData, $timestamp);
+        if ($this->config->isTrack()) {
+            $raygunClient = $this->getRaygunClient($this->config);
+            $this->setFilterParams($raygunClient);
+            $raygunClient->SendException($throwable, $tags, $userCustomData, $timestamp);
+        }
     }
 
     /**
@@ -88,9 +90,11 @@ class DataFilter
         $userCustomData = null,
         $timestamp = null
     ): void {
-        $raygunClient = $this->getRaygunClient($this->config);
-        $this->setFilterParams($raygunClient);
-        $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $userCustomData, $timestamp);
+        if ($this->config->isTrack()) {
+            $raygunClient = $this->getRaygunClient($this->config);
+            $this->setFilterParams($raygunClient);
+            $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $userCustomData, $timestamp);
+        }
     }
 
     /**
