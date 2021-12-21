@@ -13,6 +13,34 @@ class Config
     private $useAsync;
     private $user;
 
+    private $filters = [
+        '/secret/i',
+        '/key/i',
+        '/token/i',
+        '/auth/i',
+        '/card/i',
+        '/dns/i',
+        '/mac/i',
+        '/imei/i',
+
+        '/password/i',
+        '/passwd/i',
+        '/pwd/i',
+        '/email/i',
+        '/(?!user(-|_)agent)user/i',
+        '/name/i',
+        '/address/i',
+        '/street/i',
+        '/city/i',
+
+        '/identity/i',
+        '/id/i',
+        '/credential/i',
+        '/creds/i',
+        '/licence/i'
+    ];
+    private $ignoredExceptions = [];
+
     /**
      * Config constructor.
      * @param string|null $baseUrl
@@ -28,6 +56,31 @@ class Config
     }
 
     /**
+     * @return string[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param string[] $filters
+     */
+    public function setFilters(array $filters): void
+    {
+        $this->filters = $filters;
+    }
+
+    /**
+     * Add string to list of filters, by turing the string into a regex
+     * @param string $string
+     */
+    public function addToFilter(string $string): void
+    {
+        $this->filters[] = '/' . $string . '/i';
+    }
+
+    /**
      * @return string
      */
     public function getApiKey(): string
@@ -36,11 +89,27 @@ class Config
     }
 
     /**
+     * @param string|null $apiKey
+     */
+    public function setApiKey(?string $apiKey): void
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    /**
      * @return string
      */
     public function getBaseUrl(): string
     {
         return $this->baseUrl;
+    }
+
+    /**
+     * @param string|null $baseUrl
+     */
+    public function setBaseUrl(?string $baseUrl): void
+    {
+        $this->baseUrl = $baseUrl;
     }
 
     /**
@@ -105,5 +174,30 @@ class Config
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnoredExceptions(): array
+    {
+        return $this->ignoredExceptions;
+    }
+
+    /**
+     * @param array $ignoredExceptions
+     */
+    public function setIgnoredExceptions(array $ignoredExceptions): void
+    {
+        $this->ignoredExceptions = $ignoredExceptions;
+    }
+
+    /**
+     * Add given class to list if ignoredClasses
+     * @param $exception
+     */
+    public function addToIgnoredExceptions($exception): void
+    {
+        array_push($this->ignoredExceptions, $exception);
     }
 }

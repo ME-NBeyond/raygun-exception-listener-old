@@ -14,35 +14,6 @@ class DataFilter
      * @var Config
      */
     private $config;
-    /**
-     * @var array
-     */
-    private $filters = [
-        '/secret/i',
-        '/key/i',
-        '/token/i',
-        '/auth/i',
-        '/card/i',
-        '/dns/i',
-        '/mac/i',
-        '/imei/i',
-
-        '/password/i',
-        '/passwd/i',
-        '/pwd/i',
-        '/email/i',
-        '/(?!user(-|_)agent)user/i',
-        '/name/i',
-        '/address/i',
-        '/street/i',
-        '/city/i',
-
-        '/identity/i',
-        '/id/i',
-        '/credential/i',
-        '/creds/i',
-        '/licence/i'
-    ];
 
     /**
      * DataFilter constructor.
@@ -56,18 +27,22 @@ class DataFilter
     /**
      * @param Throwable $throwable
      * @param array|null $tags
-     * @param array|null $userCustomData
+     * @param array|null $customUserData
      * @param int|null $timestamp
      */
     public function sendExceptionToRaygun(
         Throwable $throwable,
         array $tags = null,
-        array $userCustomData = null,
+        array $customUserData = null,
         int $timestamp = null
     ): void {
+        if (in_array($throwable, $this->config->getIgnoredExceptions())) {
+            return;
+        }
+
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
-        $raygunClient->SendException($throwable, $tags, $userCustomData, $timestamp);
+        $raygunClient->SendException($throwable, $tags, $customUserData, $timestamp);
     }
 
     /**
@@ -76,7 +51,7 @@ class DataFilter
      * @param string $errFile
      * @param int $errLine
      * @param null $tags
-     * @param null $userCustomData
+     * @param null $customUserData
      * @param null $timestamp
      */
     public function sendErrorToRaygun(
@@ -85,37 +60,14 @@ class DataFilter
         string $errFile,
         int $errLine,
         $tags = null,
-        $userCustomData = null,
+        $customUserData = null,
         $timestamp = null
     ): void {
         $raygunClient = $this->getRaygunClient($this->config);
         $this->setFilterParams($raygunClient);
-        $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $userCustomData, $timestamp);
+        $raygunClient->SendError($errCode, $errMessage, $errFile, $errLine, $tags, $customUserData, $timestamp);
     }
 
-    /**
-     * @param string $string
-     */
-    public function addToFilter(string $string): void
-    {
-        $this->filters[] = '/' . $string . '/i';
-    }
-
-    /**
-     * @param string[] $filters
-     */
-    public function setFilters(array $filters): void
-    {
-        $this->filters = $filters;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getFilters(): array
-    {
-        return $this->filters;
-    }
 
     /**
      * @param RaygunClient $client
@@ -123,7 +75,7 @@ class DataFilter
     private function setFilterParams(RaygunClient $client)
     {
         $filtered = [];
-        foreach ($this->filters as $filter) {
+        foreach ($this->config->getFilters() as $filter) {
             $filtered[$filter] = true;
         }
         $client->setFilterParams($filtered);
