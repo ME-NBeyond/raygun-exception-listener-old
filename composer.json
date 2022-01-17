@@ -1,5 +1,5 @@
 {
-    "name": "Nbeyond/raygun-data-filter",
+    "name": "nbeyond/raygun-data-filter",
     "description": "This packages uses the Raygun4PHP package. It makes it easier to filter the data that is being send to raygun, making your application GDPR compliant",
     "keywords": [
         "raygun",
