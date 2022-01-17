@@ -1,7 +1,0 @@
-#phpstorm
-.idea
-#phpstorm
-
-#vendor
-./vendor/*
-./composer.lock
